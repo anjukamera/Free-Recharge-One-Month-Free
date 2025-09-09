@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital India Free Recharge Scheme - PM Narendra Modi Initiative</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .flag-stripes {
+            background: linear-gradient(to bottom, #FF9933 33%, #FFFFFF 33%, #FFFFFF 66%, #138808 66%);
+        }
+        
+        .chakra {
+            background: radial-gradient(circle, #000080 40%, transparent 41%);
+            background-image: 
+                radial-gradient(circle, #000080 40%, transparent 41%),
+                repeating-conic-gradient(#000080 0deg 15deg, transparent 15deg 30deg);
+            background-blend-mode: screen;
+        }
+        
+        .share-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .countdown {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-check {
+            animation: checkmark 0.5s ease-in-out;
+        }
+        
+        @keyframes checkmark {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #25D366;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <div class="flex items-center">
+            <span class="text-lg mr-2">✅</span>
+            <span id="toastMessage">Shared successfully!</span>
+        </div>
+    </div>
+
+    <div class="max-w-md w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+        <!-- Header with Indian Flag Theme -->
+        <div class="flag-stripes h-3 relative">
+            <div class="chakra w-6 h-6 rounded-full absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="p-6">
+            <!-- Logo and Title -->
+            <div class="text-center mb-6">
+                <div class="flex justify-center items-center mb-4">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/635b8b06-22cf-476e-a099-da0fdea43b8a.png" alt="Prime Minister's Office India logo with tricolor theme and official seal" class="w-20 h-20 rounded-lg border-2 border-orange-500 shadow-md" />
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Digital India Free Recharge</h1>
+                <p class="text-sm text-gray-600">पीएम नरेंद्र मोदी विशेष योजना</p>
+            </div>
+            
+            <!-- Offer Banner -->
+            <div class="bg-gradient-to-r from-green-500 to-blue-600 text-white p-4 rounded-lg text-center mb-6 pulse">
+                <h2 class="text-xl font-bold mb-2">🎉 1 Month FREE Recharge!</h2>
+                <p class="text-sm">विशेष स्वतंत्रता दिवस ऑफर</p>
+            </div>
+            
+            <!-- Phone Number Input Section -->
+            <div id="phoneSection" class="mb-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Enter Your Mobile Number</label>
+                    <div class="flex">
+                        <div class="flex items-center px-3 border border-r-0 border-gray-300 rounded-l-lg bg-gray-50">
+                            <span class="text-gray-500">+91</span>
+                        </div>
+                        <input 
+                            type="tel" 
+                            id="phoneNumber" 
+                            placeholder="98XXXXXX98" 
+                            maxlength="10"
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                    </div>
+                </div>
+                
+                <button 
+                    onclick="verifyNumber()"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200"
+                >
+                    Verify & Claim Offer
+                </button>
+                
+                <p class="text-xs text-gray-500 text-center mt-3">
+                    * टर्म्स एंड कंडीशंस अप्लाई
+                </p>
+            </div>
+            
+            <!-- Share Progress Section (Initially Hidden) -->
+            <div id="shareSection" class="hidden mb-6">
+                <div class="text-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Share with Friends to Unlock</h3>
+                    <div class="bg-gray-200 rounded-full h-3 mb-2">
+                        <div class="progress-bar bg-green-500 h-3 rounded-full w-0"></div>
+                    </div>
+                    <p class="text-sm text-gray-600"><span id="shareCount">0</span>/10 friends shared</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <button onclick="shareWhatsApp()" class="share-btn bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg">
+                        💚 WhatsApp Share
+                    </button>
+                    <button onclick="shareTelegram()" class="share-btn bg-blue-800 hover:bg-blue-900 text-white p-3 rounded-lg">
+                        💬 Telegram Share
+                    </button>
+                    <button onclick="shareSMS()" class="share-btn bg-blue-400 hover:bg-blue-500 text-white p-3 rounded-lg">
+                        📨 SMS Share
+                    </button>
+                    <button onclick="shareFriend()" class="share-btn bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg">
+                        📧 Email Share
+                    </button>
+                </div>
+                
+                <div class="countdown p-3 rounded-lg text-center mb-4">
+                    <p class="text-sm text-gray-700">⏰ Offer expires in: <span id="timer">05:00</span></p>
+                </div>
+            </div>
+            
+            <!-- Success Section (Initially Hidden) -->
+            <div id="successSection" class="hidden text-center">
+                <div class="text-green-500 mb-4">
+                    <svg class="w-16 h-16 mx-auto success-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Congratulations!</h3>
+                <p class="text-gray-600 mb-4">Your free recharge will be activated within 24 hours</p>
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    <strong>Recharge Details:</strong><br>
+                    Plan: 1 Month Unlimited<br>
+                    Validity: 30 Days<br>
+                    Amount: ₹499 FREE
+                </div>
+                <p class="text-sm text-gray-500">
+                    Thank you for participating in the Digital India initiative!
+                </p>
+            </div>
+            
+            <!-- Footer -->
+            <div class="border-t pt-4 mt-6">
+                <div class="flex justify-center space-x-4 mb-4">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/35a0d310-6985-4dba-a662-4f450e63da88.png" alt="Government of India emblem with Ashoka Chakra" class="w-10 h-10" />
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d3c39cf2-9a39-455f-8b79-1772392cbcc9.png" alt="Digital India logo with tricolor theme and technology symbols" class="w-10 h-10" />
+                </div>
+                <p class="text-xs text-gray-500 text-center">
+                    An initiative under the Hon'ble Prime Minister's Office<br>
+                    Government of India · Ministry of Communications<br>
+                    🇮🇳 Making Digital India Empowered 🇮🇳
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let shares = 0;
+        let countdownInterval;
+        let timeLeft = 5 * 60; // 5 minutes in seconds
+        let phoneNumber = '';
+        
+        function verifyNumber() {
+            phoneNumber = document.getElementById('phoneNumber').value;
+            const phoneRegex = /^[6-9]\d{9}$/;
+            
+            if (!phoneRegex.test(phoneNumber)) {
+                alert('Please enter a valid 10-digit Indian mobile number');
+                return;
+            }
+            
+            // Hide phone section, show share section
+            document.getElementById('phoneSection').classList.add('hidden');
+            document.getElementById('shareSection').classList.remove('hidden');
+            
+            // Start countdown timer
+            startCountdown();
+        }
+        
+        function shareWhatsApp() {
+            const message = `🎉 *EXCITING NEWS!* 🎉
+
+I just claimed my *FREE 1 MONTH MOBILE RECHARGE* through PM Narendra Modi's Digital India Scheme! 🇮🇳
+
+💎 *1 Month Unlimited Calls*
+💎 *2GB Daily Data* 
+💎 *100 SMS/Day*
+💎 *₹499 COMPLETELY FREE*
+
+Hurry! This special Independence Day offer is available for limited time only. 
+
+Click here to claim your free recharge: ${window.location.href}
+
+Share with 10 friends to unlock your free recharge! 🚀
+
+*Jai Hind!* 🫡`;
+            
+            const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+            
+            // Count as shared
+            setTimeout(() => {
+                incrementShareCount();
+                showToast('Shared on WhatsApp successfully!');
+            }, 1000);
+        }
+        
+        function shareTelegram() {
+            const message = `🚀 Free 1 Month Recharge Offer! Claim your free mobile recharge through PM Modi's Digital India Scheme. Limited time offer! ${window.location.href}`;
+            const telegramURL = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(message)}`;
+            window.open(telegramURL, '_blank');
+            
+            setTimeout(() => {
+                incrementShareCount();
+                showToast('Shared on Telegram successfully!');
+            }, 1000);
+        }
+        
+        function shareSMS() {
+            const message = `Free 1 Month Recharge! PM Modi Digital India Scheme. Claim now: ${window.location.href}`;
+            const smsURL = `sms:?body=${encodeURIComponent(message)}`;
+            window.open(smsURL, '_blank');
+            
+            setTimeout(() => {
+                incrementShareCount();
+                showToast('Shared via SMS successfully!');
+            }, 1000);
+        }
+        
+        function shareFriend() {
+            incrementShareCount();
+            showToast('Friend shared successfully!');
+        }
+        
+        function incrementShareCount() {
+            shares++;
+            document.getElementById('shareCount').textContent = shares;
+            
+            // Update progress bar
+            const progress = (shares / 10) * 100;
+            document.querySelector('.progress-bar').style.width = progress + '%';
+            
+            // If 10 shares reached, show success
+            if (shares >= 10) {
+                setTimeout(showSuccess, 1000);
+            }
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+        
+        function startCountdown() {
+            updateTimerDisplay();
+            
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    showToast('Offer has expired! Refresh to try again.');
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function showSuccess() {
+            clearInterval(countdownInterval);
+            document.getElementById('shareSection').classList.add('hidden');
+            document.getElementById('successSection').classList.remove('hidden');
+            
+            // Create confetti effect
+            createConfetti();
+        }
+        
+        function createConfetti() {
+            const colors = ['#FF9933', '#FFFFFF', '#138808', '#000080'];
+            const container = document.querySelector('body');
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.opacity = '0';
+                confetti.style.zIndex = '1000';
+                
+                container.appendChild(confetti);
+                
+                // Animate confetti
+                const animation = confetti.animate([
+                    { opacity: 0, transform: 'translateY(0) rotate(0deg)' },
+                    { opacity: 1, transform: 'translateY(100vh) rotate(360deg)' }
+                ], {
+                    duration: 2000 + Math.random() * 3000,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+        
+        // Prevent form submission on enter
+        document.getElementById('phoneNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                verifyNumber();
+            }
+        });
+    </script>
+</body>
+                      </html>
